@@ -9,8 +9,8 @@ client = MongoClient(uri)
 app = Flask(__name__)
 CORS(app)
 
-db = client["shop"]
-collection = db["shop_info"]
+db = client["customer"]
+collection = db["cus_info"]
 
 @app.route("/")
 def Greet():
