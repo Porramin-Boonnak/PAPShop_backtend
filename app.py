@@ -22,7 +22,17 @@ def login_customer(username):
     if username_found:
         return jsonify(username_found)
     else:
-        return jsonify({"error": "product not found"}), 404
+        return jsonify({"error": "username not found"}), 404
+
+@app.route("/customer/signup", methods=["POST"])
+def signup_customer():
+    data = request.get_json()
+    found = collection.find_one({"_id": data['_id']})
+    if found :
+        return jsonify({"login": False})
+    else:
+        collection.insert_one(data)
+        return jsonify({"login": True})
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
