@@ -16,9 +16,9 @@ collection = db["cus_info"]
 def Greet():
     return "<p>Welcome to Student Management API</p>"
 
-@app.route("/customer/login/<string:username>", methods=["GET"])
-def login_customer(username):
-    username_found = collection.find_one({"username": username})
+@app.route("/customer/login/<string:_id>", methods=["GET"])
+def login_customer(_id):
+    username_found = collection.find_one({"_id": _id})
     if username_found:
         return jsonify(username_found)
     else:
