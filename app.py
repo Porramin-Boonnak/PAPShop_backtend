@@ -12,6 +12,9 @@ CORS(app)
 db = client["customer"]
 collection = db["cus_info"]
 
+dbpro = client["product"]
+collectionpro = dbpro["pro_info"]
+
 @app.route("/")
 def Greet():
     return "<p>Welcome to Student Management API</p>"
@@ -23,6 +26,13 @@ def login_customer(_id):
         return jsonify(username_found)
     else:
         return jsonify({"error": "username not found"}), 404
+@app.route("/product", methods=["GET"])
+def get_product():
+    product = collectionpro.find()
+    if product:
+        return jsonify(list(product))
+    else:
+        return jsonify({"error": "product not found"}), 404
 
 @app.route("/customer/signup", methods=["POST"])
 def signup_customer():
