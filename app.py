@@ -15,6 +15,8 @@ collection = db["cus_info"]
 dbpro = client["product"]
 collectionpro = dbpro["pro_info"]
 
+collectionbill = db["bill"]
+
 @app.route("/")
 def Greet():
     return "<p>Welcome to Student Management API</p>"
@@ -26,6 +28,7 @@ def login_customer(_id):
         return jsonify(username_found)
     else:
         return jsonify({"error": "username not found"}), 404
+    
 @app.route("/product", methods=["GET"])
 def get_product():
     product = collectionpro.find()
@@ -33,6 +36,25 @@ def get_product():
         return jsonify(list(product))
     else:
         return jsonify({"error": "product not found"}), 404
+    
+@app.route("/product/<string:_id>", methods=["PUT"])
+def PUT_product(_id):
+    product = collectionpro.find_one({"_id":_id})
+    if product:
+        data = request.get_json()
+        collectionpro.update_one({"_id": _id}, {"$set": data})
+        product = collectionpro.find_one({"_id":_id})
+        return jsonify(product)
+    else:
+        return jsonify({"error": "product not found"}), 404
+    
+@app.route("/product/<string:_id>", methods=["GET"])
+def GET_one_product(_id):
+    product = collectionpro.find_one({"_id": _id})
+    if product:
+        return jsonify(product)
+    else:
+        return jsonify({"found": False}), 404
 
 @app.route("/customer/signup", methods=["POST"])
 def signup_customer():
@@ -43,6 +65,32 @@ def signup_customer():
     else:
         collection.insert_one(data)
         return jsonify({"login": True})
+
+@app.route("/bill", methods=["POST"])
+def insert_bill():
+    data = request.get_json()
+    collectionbill.insert_one(data)
+
+@app.route("/bill/<string:_id>", methods=["GET"])
+def GET_bill(_id):
+    bill = collectionbill.find_one({"_id": _id})
+    if bill:
+        return jsonify(bill)
+    else:
+        return jsonify({"found": False}), 404
+
+@app.route("/bill/<string:_id>", methods=["PUT"])
+def PUT_bill(_id):
+    bill = collectionbill.find_one({"_id": _id})
+    if bill:
+        data = request.get_json()
+        collectionbill.update_one({"_id": _id}, {"$set": data})
+        bill = collectionbill.find_one({"_id": _id})
+        return jsonify(list(bill))
+    else:
+        return jsonify({"error": "bill not found"}), 404
+
+        
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
