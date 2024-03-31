@@ -36,6 +36,15 @@ def get_product():
         return jsonify(list(product))
     else:
         return jsonify({"error": "product not found"}), 404
+
+@app.route("/product/array", methods=["POST"])
+def get_product_array():
+    data = request.get_json()
+    product = []
+    for x in data['data']:
+     product.append(collectionpro.find_one({"_id":x['res']}))
+    
+    return jsonify(list(product))
     
 @app.route("/product/<string:_id>", methods=["PUT"])
 def PUT_product(_id):
