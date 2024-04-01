@@ -38,6 +38,11 @@ def get_product():
     else:
         return jsonify({"error": "product not found"}), 404
 
+@app.route("/product/insert", methods=["POST"])
+def insert_product():
+    data = request.get_json()
+    collectionpro.insert_one(data)
+
 @app.route("/product/array", methods=["POST"])
 def get_product_array():
     data = request.get_json()
@@ -55,6 +60,15 @@ def PUT_product(_id):
         collectionpro.update_one({"_id": _id}, {"$set": data})
         product = collectionpro.find_one({"_id":_id})
         return jsonify(product)
+    else:
+        return jsonify({"error": "product not found"}), 404
+
+@app.route("/product/<string:product_id>", methods=["DELETE"])
+def product_delete(product_id):
+    product = collectionpro.find_one({"_id": product_id})
+    if product:
+        collectionpro.delete_one({"_id": product_id})
+        return jsonify({"message": "product deleted successfully"}), 200
     else:
         return jsonify({"error": "product not found"}), 404
     
