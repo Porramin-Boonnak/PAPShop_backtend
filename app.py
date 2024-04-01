@@ -17,6 +17,7 @@ collectionpro = dbpro["pro_info"]
 
 collectionbill = db["bill"]
 collectionaddress = db["address"]
+collectionadadmin = db["admin"]
 
 @app.route("/")
 def Greet():
@@ -27,6 +28,14 @@ def login_customer(_id):
     username_found = collection.find_one({"_id": _id})
     if username_found:
         return jsonify(username_found)
+    else:
+        return jsonify({"error": "username not found"}), 404
+
+@app.route("/admin/login/<string:_id>", methods=["GET"])
+def login_admin(_id):
+    admin_found = collectionadadmin.find_one({"_id": _id})
+    if admin_found:
+        return jsonify(admin_found)
     else:
         return jsonify({"error": "username not found"}), 404
     
