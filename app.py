@@ -16,6 +16,7 @@ dbpro = client["product"]
 collectionpro = dbpro["pro_info"]
 
 collectionbill = db["bill"]
+collectionaddress = db["address"]
 
 @app.route("/")
 def Greet():
@@ -99,7 +100,21 @@ def PUT_bill(_id):
     else:
         return jsonify({"error": "bill not found"}), 404
 
-        
+@app.route("/address", methods=["POST"])
+def address_customer():
+    data = request.get_json()
+    found = collectionaddress.find_one({"_id": data['_id']})
+    if found :
+        collectionaddress.update_one({"_id": data['_id']}, {"$set": data})
+        return jsonify({"succsess": False})
+    else:
+        collectionaddress.insert_one(data)
+        return jsonify({"succsess": True})
+
+@app.route("/address/<string:_id>", methods=["GET"])
+def GET_one_address(_id):
+    address = collectionaddress.find_one({"_id": _id})
+    return jsonify(address)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
